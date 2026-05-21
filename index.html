@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Artistic Splat Viewer - Hue Spectrum</title>
+  <title>Artistic Splat Viewer - Psychedelic Liquid Trip</title>
   <link rel="icon" href="data:,">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,7 +23,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #0a0a0a;
+      background: #050505;
       color: #fff;
       z-index: 10;
       gap: 1rem;
@@ -34,10 +34,11 @@
       font-size: 0.8rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: #555;
+      color: #ff00ff;
+      text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
     }
     .bar { width: 180px; height: 1px; background: #222; }
-    .fill { height: 100%; background: #fff; width: 0%; transition: width 0.2s; }
+    .fill { height: 100%; background: #00ffff; width: 0%; transition: width 0.2s; box-shadow: 0 0 10px #00ffff;}
 
     #controls {
       position: fixed;
@@ -45,13 +46,14 @@
       right: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.2rem;
       z-index: 5;
       opacity: 0;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.75);
       padding: 1.5rem;
-      border: 1px solid #00ffcc;
-      box-shadow: 0 0 15px rgba(0, 255, 210, 0.15);
+      border: 1px solid #ff00ff;
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.3), inset 0 0 15px rgba(0, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
       transition: opacity 0.5s ease;
     }
     #controls.visible { opacity: 1; }
@@ -59,7 +61,7 @@
     .ctrl {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .ctrl-header {
@@ -72,41 +74,40 @@
       font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: #00ffcc;
       font-weight: bold;
+      color: #00ffff;
     }
 
     .ctrl-value {
       font-size: 0.7rem;
       letter-spacing: 0.1em;
       color: #fff;
-      min-width: 4.5rem;
+      min-width: 3.5rem;
       text-align: right;
     }
 
-    /* Slider com Spectrum em Gradient para Feedback Visual */
     input[type="range"] {
       -webkit-appearance: none;
-      width: 200px;
-      height: 8px;
-      background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+      width: 180px;
+      height: 4px;
+      background: #222;
       outline: none;
       cursor: pointer;
-      border: 1px solid #333;
+      border: 1px solid #444;
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 10px;
-      height: 18px;
-      background: #fff;
-      border: 1px solid #000;
+      width: 12px;
+      height: 12px;
+      background: #ff00ff;
+      box-shadow: 0 0 8px #00ffff;
       cursor: pointer;
     }
 
     #btn-toggle-scene {
-      background: #00ffcc;
-      border: 1px solid #00ffcc;
-      color: #000;
+      background: transparent;
+      border: 1px solid #00ffff;
+      color: #00ffff;
       font-family: 'Courier New', monospace;
       font-size: 0.7rem;
       font-weight: bold;
@@ -119,8 +120,9 @@
       margin-top: 0.5rem;
     }
     #btn-toggle-scene:hover {
-      background: #000;
-      color: #00ffcc;
+      background: #00ffff;
+      color: #000;
+      box-shadow: 0 0 15px #00ffff;
     }
 
     #hint {
@@ -130,7 +132,7 @@
       transform: translateX(-50%);
       font-size: 0.65rem;
       letter-spacing: 0.15em;
-      color: #444;
+      color: #555;
       text-transform: uppercase;
       pointer-events: none;
     }
@@ -149,18 +151,33 @@
 <body>
 
   <div id="loading">
-    <p id="loading-text">A carregar matriz de cor</p>
+    <p id="loading-text">A dilatar pupilas gráficas...</p>
     <div class="bar"><div class="fill" id="fill"></div></div>
   </div>
 
   <div id="controls">
-    <!-- Slider Único: Espetro Cromático Contínuo de 0 a 360 Graus -->
     <div class="ctrl">
       <div class="ctrl-header">
-        <label>Tom Espetral</label>
-        <span class="ctrl-value" id="val-hue">Original</span>
+        <label>Frequência (BPM)</label>
+        <span class="ctrl-value" id="val-speed">1.0x</span>
       </div>
-      <input type="range" id="slider-hue" min="0" max="360" step="1" value="0">
+      <input type="range" id="slider-speed" min="0.0" max="4.0" step="0.1" value="1.0">
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-header">
+        <label>Derretimento Líquido</label>
+        <span class="ctrl-value" id="val-warp">20%</span>
+      </div>
+      <input type="range" id="slider-warp" min="0.0" max="0.1" step="0.005" value="0.02">
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-header">
+        <label>Chroma Shift</label>
+        <span class="ctrl-value" id="val-split">15%</span>
+      </div>
+      <input type="range" id="slider-split" min="0.0" max="0.04" step="0.002" value="0.015">
     </div>
     
     <button id="btn-toggle-scene">Mudar Cena</button>
@@ -172,6 +189,9 @@
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { SparkRenderer, SplatMesh } from "@sparkjsdev/spark";
+    import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+    import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+    import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.01, 1000);
@@ -179,7 +199,7 @@
 
     const renderer = new THREE.WebGLRenderer({ antialias: false });
     renderer.setSize(innerWidth, innerHeight);
-    renderer.setPixelRatio(devicePixelRatio);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     document.body.appendChild(renderer.domElement);
 
     const spark = new SparkRenderer({ renderer });
@@ -189,15 +209,92 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
+    // --- COMPOSER DE PÓS-PROCESSAMENTO ---
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    // Shader Psicadélico Estável (Fórmulas Matemáticas de Espectro Contínuo)
+    const PsychedelicShader = {
+      uniforms: {
+        "tDiffuse": { value: null },
+        "time": { value: 0.0 },
+        "warp": { value: 0.02 },
+        "chroma": { value: 0.015 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform float time;
+        uniform float warp;
+        uniform float chroma;
+        varying vec2 vUv;
+
+        // Gerador Cosine Palette de Inigo Quilez (Espectro Puro e Fluido)
+        vec3 rainbowPalette(in float t) {
+          vec3 a = vec3(0.5, 0.5, 0.5);
+          vec3 b = vec3(0.5, 0.5, 0.5);
+          vec3 c = vec3(1.0, 1.0, 1.0);
+          vec3 d = vec3(0.0, 0.33, 0.67);
+          return a + b * cos(6.28318 * (c * t + d));
+        }
+
+        void main() {
+          vec2 uv = vUv;
+
+          // Ondas de Distorção Espacial Líquida
+          float waveX = sin(uv.y * 12.0 + time * 1.5) * warp;
+          float waveY = cos(uv.x * 12.0 + time * 1.2) * warp;
+          uv.x += waveX;
+          uv.y += waveY;
+
+          // Separação de Canais Cromáticos (Aberração)
+          float rChan = texture2D(tDiffuse, uv + vec2(chroma, 0.0)).r;
+          float gChan = texture2D(tDiffuse, uv).g;
+          float bChan = texture2D(tDiffuse, uv - vec2(chroma, 0.0)).b;
+          float alpha = texture2D(tDiffuse, uv).a;
+          
+          vec3 baseColor = vec3(rChan, gChan, bChan);
+
+          // Cálculo de Luminância e Injeção de Plasma
+          float luma = dot(baseColor, vec3(0.299, 0.587, 0.114));
+          
+          // Padrão de interferência psicadélica baseado no espaço modificado
+          float pattern = sin(uv.x * 4.0 + time * 0.5) * cos(uv.y * 4.0 - time * 0.3);
+          vec3 rainbow = rainbowPalette(luma * 0.8 + pattern * 0.5 + time * 0.15);
+
+          // Mistura o mundo real do Splat com as cores alucinogénicas nas áreas iluminadas
+          vec3 finalColor = mix(baseColor, rainbow, luma * 0.7);
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `
+    };
+
+    const psychPass = new ShaderPass(PsychedelicShader);
+    composer.addPass(psychPass);
+
     const scenes = ["content/scene.spz", "content/scene1.spz", "content/scene2.spz"];
     let currentSceneIndex = 0;
     let splat = null;
+    let clock = new THREE.Clock();
+    let customTime = 0;
+    let speedMultiplier = 1.0;
 
-    // Instanciamos um objeto Color utilitário do Three.js para fazer as conversões HSL nativas
-    const targetColor = new THREE.Color();
-
-    const sliderHue = document.getElementById("slider-hue");
-    const valHue    = document.getElementById("val-hue");
+    // Interface
+    const sliderSpeed = document.getElementById("slider-speed");
+    const sliderWarp = document.getElementById("slider-warp");
+    const sliderSplit = document.getElementById("slider-split");
+    
+    const valSpeed = document.getElementById("val-speed");
+    const valWarp = document.getElementById("val-warp");
+    const valSplit = document.getElementById("val-split");
 
     function loadScene(url) {
       if (splat) {
@@ -223,58 +320,55 @@
         onLoad: () => {
           loadingEl.classList.add("hidden");
           document.getElementById("controls").classList.add("visible");
-          applySpectrumHue();
         }
       });
 
+      if(splat.recolor) splat.recolor.setHex(0xffffff);
       scene.add(splat);
     }
 
-    // Função matemática fluida que converte os graus do slider num tom HSL real
-    function applySpectrumHue() {
-      if (!splat) return;
+    // Eventos dos Sliders
+    sliderSpeed.addEventListener("input", () => {
+      speedMultiplier = parseFloat(sliderSpeed.value);
+      valSpeed.textContent = speedMultiplier.toFixed(1) + "x";
+    });
 
-      const hueVal = parseInt(sliderHue.value);
+    sliderWarp.addEventListener("input", () => {
+      const w = parseFloat(sliderWarp.value);
+      psychPass.uniforms.warp.value = w;
+      valWarp.textContent = Math.round(w * 1000) / 10 + "%";
+    });
 
-      if (hueVal === 0 || hueVal === 360) {
-        // Nas extremidades, restauramos a paleta original do SPZ
-        if (splat.recolor) {
-          splat.recolor.setHex(0xffffff);
-        }
-        valHue.textContent = "Original";
-      } else {
-        // Converte o valor de 0-360 para um rácio de 0.0 a 1.0 exigido pelo Three.js
-        const h = hueVal / 360;
-        // Fixamos Saturação em 100% e Luminosidade a 50% para cores vivas e puras
-        targetColor.setHSL(h, 1.0, 0.5);
-
-        if (splat.recolor) {
-          splat.recolor.copy(targetColor);
-        }
-        valHue.textContent = `${hueVal}°`;
-      }
-    }
-
-    // Evento contínuo 'input' garante que muda de cor em tempo real enquanto arrastas o slider
-    sliderHue.addEventListener("input", applySpectrumHue);
+    sliderSplit.addEventListener("input", () => {
+      const s = parseFloat(sliderSplit.value);
+      psychPass.uniforms.chroma.value = s;
+      valSplit.textContent = Math.round(s * 1000) / 10 + "%";
+    });
 
     document.getElementById("btn-toggle-scene").addEventListener("click", () => {
       currentSceneIndex = (currentSceneIndex + 1) % scenes.length;
       loadScene(scenes[currentSceneIndex]);
     });
 
+    // Loop de Animação
     renderer.setAnimationLoop(() => {
+      const delta = clock.getDelta();
+      customTime += delta * speedMultiplier;
+      
+      // Passa o tempo incremental para o shader animar os senos e cossenos
+      psychPass.uniforms.time.value = customTime;
+
       controls.update();
-      renderer.render(scene, camera);
+      composer.render(); 
     });
 
     window.addEventListener("resize", () => {
       camera.aspect = innerWidth / innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(innerWidth, innerHeight);
+      composer.setSize(innerWidth, innerHeight);
     });
 
-    // Inicialização direta e focada
     loadScene(scenes[currentSceneIndex]);
   </script>
 
